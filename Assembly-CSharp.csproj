@@ -43,6 +43,8 @@
   <ItemGroup>
      <Compile Include="Assets/Scripts/MeshGenerator.cs" />
      <Compile Include="Assets/Scripts/PerlinNoise.cs" />
+     <Compile Include="Assets/Scripts/MapGenerator.cs" />
+     <Compile Include="Assets/Scripts/MapDisplay.cs" />
      <Folder Include="Assets" />
      <Folder Include="Assets/Scripts" />
      <Folder Include="Assets/Scenes" />

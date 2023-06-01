@@ -9,14 +9,18 @@ public class MeshGenerator : MonoBehaviour
 {
     public int xSize = 20;
     public int zSize = 20;
-    
+
+    public Gradient _gradient;
     
     private Mesh mesh;
     
     private Vector3[] _vertices;
     private int[] _triangles;
 
-    private Vector2[] _uvs;
+    private Color[] _colors;
+
+    private float _minTerrainHeight;
+    private float _maxTerrainHeiht;
 
     private void Start()
     {
@@ -38,6 +42,12 @@ public class MeshGenerator : MonoBehaviour
             {
                 float y = Mathf.PerlinNoise(x * 0.3f, z * 0.3f) * 2f;
                 _vertices[i] = new Vector3(x, y, z);
+
+                if (y > _maxTerrainHeiht)
+                    _maxTerrainHeiht = y;
+                if (y < _minTerrainHeight)
+                    _minTerrainHeight = y;
+                
                 i++;
             }
         }
@@ -66,12 +76,14 @@ public class MeshGenerator : MonoBehaviour
         }
 
         //Refaz os mapas uvs do PLANO
-        _uvs = new Vector2[_vertices.Length];
+        _colors = new Color[_vertices.Length];
         for (int i = 0, z = 0; z <= zSize; z++)
         {
             for (int x = 0; x <= xSize; x++)
             {
-                _uvs[i] = new Vector2((float)x / xSize, (float)z / zSize);
+                float height = Mathf.InverseLerp(_minTerrainHeight, _maxTerrainHeiht, _vertices[i].y);
+                _colors[i] = _gradient.Evaluate(height);
+
                 i++;
             }
         }
@@ -85,7 +97,7 @@ public class MeshGenerator : MonoBehaviour
         mesh.vertices = _vertices;
         mesh.triangles = _triangles;
 
-        mesh.uv = _uvs;
+        mesh.colors = _colors;
         
         mesh.RecalculateNormals();
     }
